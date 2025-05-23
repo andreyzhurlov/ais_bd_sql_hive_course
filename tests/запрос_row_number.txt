@@ -1,0 +1,19 @@
+WITH generated_data AS (
+    SELECT
+        stack(10,
+              1, 'Alice',   'A', 100,
+              2, 'Bob',     'A', 200,
+              3, 'Charlie', 'A', 150,
+              4, 'Diana',   'B', 180,
+              5, 'Eve',     'B', 160,
+              6, 'Frank',   'B', 170,
+              7, 'George',  'C', 120,
+              8, 'Hannah',  'C', 110,
+              9, 'Ivan',    'C', 130,
+             10, 'Judy',    'C', 140
+        ) AS (id, name, category, value)
+)
+SELECT
+  *,
+  ROW_NUMBER() OVER (PARTITION BY category ORDER BY value DESC) AS rank_in_category
+FROM generated_data
