@@ -1,0 +1,50 @@
+-- Включаем движок Tez
+SET hive.execution.engine=tez;
+
+-- Убедимся, что база существует
+CREATE DATABASE IF NOT EXISTS dev;
+USE dev;
+
+-- Удалим таблицу, если была
+DROP TABLE IF EXISTS dev.partition_test;
+
+-- 1. Создание партиционированной таблицы
+CREATE TABLE dev.partition_test (
+    id INT,
+    name STRING
+)
+PARTITIONED BY (load_date STRING)
+STORED AS PARQUET;
+
+-- 2. Вставка данных в 2 партиции
+INSERT INTO TABLE dev.partition_test PARTITION (load_date='2025-05-19') VALUES
+(1, 'Alice'),
+(2, 'Bob');
+
+INSERT INTO TABLE dev.partition_test PARTITION (load_date='2025-05-20') VALUES
+(3, 'Charlie'),
+(4, 'Diana');
+
+-- 3. Проверим содержимое
+SELECT * FROM dev.partition_test;
+
+-- 4. Удаление одной партиции
+ALTER TABLE dev.partition_test DROP PARTITION (load_date='2025-05-19');
+
+-- 5. Обновление метаданных (MSCK только для внешних таблиц — но включим на всякий случай)
+-- Для внутренних таблиц Hive сам управляет метаданными, но если данные менялись вручную на HDFS, можно:
+MSCK REPAIR TABLE dev.partition_test;
+
+-- 6. Дозапись новой партиции
+INSERT INTO TABLE dev.partition_test PARTITION (load_date='2025-05-21') VALUES
+(5, 'Eve'),
+(6, 'Frank');
+
+-- 7. Обновление существующей партиции (перезапись)
+-- Hive не поддерживает UPDATE напрямую, поэтому делаем перезапись (overwrite)
+INSERT OVERWRITE TABLE dev.partition_test PARTITION (load_date='2025-05-20') VALUES
+(7, 'George'),
+(8, 'Hannah');
+
+-- 8. Проверка итоговых данных
+SELECT * FROM dev.partition_test ORDER BY load_date, id;
