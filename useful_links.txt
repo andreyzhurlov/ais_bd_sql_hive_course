@@ -1,1 +1,12 @@
+Спиок ссылок на ресурсы с общим доступом:
+
+# Репозиторий
 https://github.com/andreyzhurlov/ais_bd_sql_hive_course
+
+
+# Облачная директория (резерв 1)
+https://drive.google.com/drive/folders/1TYNF8gEUDBoPNqdF6N6Fccyst-LQGJ-K?usp=sharing
+
+
+# Облачная директория (резерв 2)
+https://cloud.mail.ru/public/YNNi/Rhb3i4Ug7
