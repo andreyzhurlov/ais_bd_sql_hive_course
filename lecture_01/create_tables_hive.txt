@@ -1,18 +1,18 @@
 
-CREATE TABLE regions (
+CREATE TABLE hr.regions (
     region_id INT,
     region_name STRING
 )
 STORED AS ORC;
 
-CREATE TABLE countries (
+CREATE TABLE hr.countries (
     country_id STRING,
     country_name STRING,
     region_id INT
 )
 STORED AS ORC;
 
-CREATE TABLE locations (
+CREATE TABLE hr.locations (
     location_id INT,
     street_address STRING,
     postal_code STRING,
@@ -22,14 +22,14 @@ CREATE TABLE locations (
 )
 STORED AS ORC;
 
-CREATE TABLE departments (
+CREATE TABLE hr.departments (
     department_id INT,
     department_name STRING,
     location_id INT
 )
 STORED AS ORC;
 
-CREATE TABLE jobs (
+CREATE TABLE hr.jobs (
     job_id INT,
     job_title STRING,
     min_salary DECIMAL(8,2),
@@ -37,7 +37,7 @@ CREATE TABLE jobs (
 )
 STORED AS ORC;
 
-CREATE TABLE employees (
+CREATE TABLE hr.employees (
     employee_id INT,
     first_name STRING,
     last_name STRING,
@@ -51,7 +51,7 @@ CREATE TABLE employees (
 )
 STORED AS ORC;
 
-CREATE TABLE dependents (
+CREATE TABLE hr.dependents (
     dependent_id INT,
     first_name STRING,
     last_name STRING,
