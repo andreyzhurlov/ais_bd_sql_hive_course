@@ -1,0 +1,10 @@
+CREATE EXTERNAL TABLE IF NOT EXISTS athletes (
+    Name STRING,
+    NOC STRING,
+    Discipline STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ';'
+STORED AS TEXTFILE
+LOCATION '/user/student/external_tables/athletes'
+TBLPROPERTIES ("skip.header.line.count"="1");
