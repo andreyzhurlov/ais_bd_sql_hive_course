@@ -14,6 +14,12 @@ DROP TABLE IF EXISTS hr.regions;
 ---------------------------------------------
 ---------------------------------------------
 
+CREATE TABLE hr.regions (
+    region_id INT,
+    region_name STRING
+)
+STORED AS ORC;
+
 CREATE TABLE IF NOT EXISTS hr.countries (
     country_id STRING,
     country_name STRING,
