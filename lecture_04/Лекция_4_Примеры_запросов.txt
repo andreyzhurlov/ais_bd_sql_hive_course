@@ -12,7 +12,7 @@ select
   , first_name
   , last_name
   , manager_id
-from employees;
+from hr.employees;
 
 
 select
@@ -21,12 +21,12 @@ select
   , last_name
   , manager_id
   , coalesce(manager_id, 0)
-from employees;
+from hr.employees;
 
 select
     *
   , nullif(job_title, 'President')
-from jobs;
+from hr.jobs;
 
 select
 	region_id
@@ -39,7 +39,7 @@ select
         when 'Asia' then 'Азия'
 		else 'Не Азия'
 	end
-from regions;
+from hr.regions;
 
 select
     first_name
@@ -54,13 +54,13 @@ select
 	        then 'High salary'
 		else 'TOP'
 	end
-from employees
+from hr.employees
 order by employee_id
 limit 10;
 
 
 select *
-from employees
+from hr.employees
 natural join departments;
 
 
@@ -68,7 +68,7 @@ select
 	emp.first_name
   , emp.last_name
   , dept.department_name
-from employees as emp
+from hr.employees as emp
 natural join departments as dept;
 
 
@@ -76,7 +76,7 @@ select
     emp.first_name
   , emp.last_name
   , dept.department_name
-from employees as emp
+from hr.employees as emp
 left join departments as dept
 on emp.department_id = dept.department_id;
 
@@ -86,7 +86,7 @@ select
   , emp.last_name
   , dept.department_name
   , loc.city
-from employees as emp
+from hr.employees as emp
 left join departments as dept
 on emp.department_id = dept.department_id
 left join locations as loc
@@ -98,7 +98,7 @@ select
   , emp.last_name
   , dept.department_name
   , loc.city
-from employees as emp
+from hr.employees as emp
 left join departments as dept
 on emp.department_id = dept.department_id
 left join locations as loc
@@ -112,7 +112,7 @@ select
   , emp.last_name
   , dept.department_name
   , loc.city
-from employees as emp
+from hr.employees as emp
 left join departments as dept
 on emp.department_id = dept.department_id
 left join locations as loc
@@ -126,7 +126,7 @@ select
   , emp.last_name
   , mgr.first_name
   , mgr.last_name
-from employees as emp
+from hr.employees as emp
 left join employees as mgr
     on emp.manager_id = mgr.employee_id;
 	
@@ -138,7 +138,7 @@ select
   , emp.salary
   , emp.job_id
   , jobs.job_title
-from employees as emp
+from hr.employees as emp
 left join jobs
 on emp.job_id = jobs.job_id and
    emp.salary between jobs.min_salary and jobs.max_salary;
@@ -149,7 +149,7 @@ select
   , emp.last_name as emp_last_name
   , mgr.first_name as mgr_first_name
   , mgr.last_name as mgr_last_name
-from employees as emp
+from hr.employees as emp
 left join employees as mgr
     on emp.manager_id = mgr.employee_id;
 	
@@ -159,7 +159,7 @@ select
   , emp.last_name as emp_last_name
   , mgr.first_name as mgr_first_name
   , mgr.last_name as mgr_last_name
-from employees as emp
+from hr.employees as emp
 right join employees as mgr
     on emp.manager_id = mgr.employee_id;
 	
@@ -169,88 +169,88 @@ select
   , emp.last_name as emp_last_name
   , mgr.first_name as mgr_first_name
   , mgr.last_name as mgr_last_name
-from employees as emp
+from hr.employees as emp
 full join employees as mgr
     on emp.manager_id = mgr.employee_id;
 	
 	
-select * from employees;
+select * from hr.employees;
 
-select * from departments;
+select * from hr.departments;
 
 
 select
 	emp.first_name
   , emp.last_name
   , dept.department_name
-from employees as emp
+from hr.employees as emp
 cross join departments as dept;
 
 
 select last_name, salary
-from   employees
+from hr.  employees
 where  salary >
                (select salary
-                from   employees
+                from hr.  employees
                 where  last_name = 'Fay');
 
 
 select last_name, job_id, salary
-from   employees
+from hr.  employees
 where  job_id =  
                 (select job_id
-                 from   employees
+                 from hr.  employees
                  where  last_name = 'Lorentz')
 AND    salary >
                 (select salary
-                 from   employees
+                 from hr.  employees
                  where  last_name = 'Lorentz');
 				 
 				 
 select last_name, job_id
-from   employees
+from hr.  employees
 where  job_id =
                 (select job_id
-                 from   employees
+                 from hr.  employees
                  where  last_name = 'Lorentz');
 				 
 				 
 
-select * from jobs;
+select * from hr.jobs;
 
 select employee_id, last_name, job_id, salary
-from   employees
+from hr.  employees
 where  salary < any
                     (select salary
-                     from   employees
+                     from hr.  employees
                      where  job_id = 6)
 AND    job_id <> 6;
 
 
 select employee_id, last_name, job_id, salary
-from   employees
+from hr.  employees
 where  salary < all
                     (select salary
-                     from   employees
+                     from hr.  employees
                      where  job_id = 6)
 and job_id <> 6;
 
 
-select employee_id,salary,last_name from employees M
+select employee_id,salary,last_name from hr.employees M
 where exists
-(select employee_id from employees W
+(select employee_id from hr.employees W
  where (W.manager_id = M.employee_id) AND W.salary > 10000);
 
 
-select * from jobs
+select * from hr.jobs
 where not exists
-(select * from employees
+(select * from hr.employees
  where employees.job_id = jobs.job_id and 
        employees.manager_id is not null);
 
 
 select emp.last_name
-from   employees emp
+from hr.  employees emp
 where  emp.employee_id not in
                            (select mgr.manager_id
-                            from   employees mgr);
+                            from hr.  employees mgr);
