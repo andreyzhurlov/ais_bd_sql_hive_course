@@ -1,0 +1,47 @@
+--------------------------------------------------
+--------------------------------------------------
+CREATE MATERIALIZED VIEW IF NOT EXISTS dev.mv_total_orders_by_client_inc
+STORED AS ORC
+TBLPROPERTIES (
+  'transactional' = 'true',
+  'incremental.rebuild' = 'true'
+)
+AS
+SELECT
+	c.id AS client_id,
+	c.city,
+	SUM(o.order_ammount) AS total_amount,
+	COUNT(o.order_id) AS total_orders
+FROM dev.orders o
+JOIN dev.clients c
+  ON o.client_id = c.id
+GROUP BY c.id, c.city;
+
+
+
+select * from dev.mv_total_orders_by_client_inc;
+
+
+--------------------------------------------------
+
+INSERT INTO dev.clients (id, first_name, last_name, birth_date, email, phone, city)
+VALUES
+(21, 'Maria', 'Alekseeva', '1996-01-03', 'maria.alekseeva@example.com', '+79265556677', 'Voronezh'),
+(22, 'Maria', 'Alekseeva', '1996-01-03', 'maria.alekseeva@example.com', '+79265556677', 'Voronezh'),
+(23, 'Maria', 'Alekseeva', '1996-01-03', 'maria.alekseeva@example.com', '+79265556677', 'Voronezh');
+
+
+--------------------------------------------------
+
+INSERT INTO dev.orders (order_id, order_date, order_qty, order_ammount, item_name, client_id)
+VALUES
+(100, '2024-07-13', 2, 524.1, 'coffee maker', 21),
+(101, '2024-07-13', 2, 524.1, 'coffee maker', 22),
+(102, '2024-07-13', 2, 524.1, 'coffee maker', 23);
+
+
+
+ ALTER MATERIALIZED VIEW dev.mv_total_orders_by_client_inc REBUILD;
+ 
+ 
+ select * from dev.mv_total_orders_by_client_inc;
