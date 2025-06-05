@@ -1,0 +1,81 @@
+-------------------------------------------------------------------------
+-- Партицирование
+-------------------------------------------------------------------------
+
+CREATE TABLE dev.orders_part_v2 (
+    order_id INT,
+    order_qty INT,
+    order_ammount DECIMAL(10,2),
+    item_name STRING,
+    client_id INT
+)
+PARTITIONED BY (
+    year INT,
+    month INT,
+    day INT
+)
+STORED AS ORC;
+
+
+-- Наполнение
+INSERT OVERWRITE TABLE dev.orders_part_v2
+PARTITION (year, month, day)
+SELECT
+    order_id,
+    order_qty,
+    order_ammount,
+    item_name,
+    client_id,
+    YEAR(order_date)  AS year,
+    MONTH(order_date) AS month,
+    DAY(order_date)   AS day
+FROM dev.orders;
+
+
+
+
+-- 1. Удалить старую партицию:
+sql
+Copy
+Edit
+ALTER TABLE dev.orders_part_v2 DROP IF EXISTS PARTITION (
+    year = 2025,
+    month = 4,
+    day = 30
+);
+
+
+
+-- 2. Вставить новые данные в эту партицию:
+sql
+Copy
+Edit
+INSERT INTO TABLE dev.orders_part_v2 PARTITION (year, month, day)
+SELECT
+    order_id,
+    order_qty,
+    order_ammount,
+    item_name,
+    client_id,
+    2025 AS year,
+    4 AS month,
+    30 AS day
+FROM dev.orders
+WHERE order_date = DATE '2025-04-30';
+
+
+
+
+-- Перезапись партиции
+INSERT OVERWRITE TABLE dev.orders PARTITION (year, month, day)
+SELECT
+    order_id,
+    order_qty,
+    order_ammount,
+    item_name,
+    client_id,
+    2025 AS year,
+    4 AS month,
+    30 AS day
+FROM staging.orders_delta
+WHERE order_date = DATE '2025-04-30';
